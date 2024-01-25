@@ -39,26 +39,23 @@ def save_spread_out_faces(video_path, output_folder, max_detections=10):
         # Check if any faces are detected
         if len(faces) > 0:
             for (x, y, w, h) in faces:
-            # Draw a rectangle around each face
-             cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
+                # Draw a rectangle around each face
+                cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
 
-        detection_count += 1
+            detection_count += 1
 
-        # Calculate the timecode (HHMMSSFF)
-        total_seconds = frame_count / fps
-        hours = int(total_seconds // 3600)
-        minutes = int((total_seconds % 3600) // 60)
-        seconds = int(total_seconds % 60)
-        frame_within_second = int(frame_count % fps)
+            # Calculate the timecode (HHMMSSFF)
+            hours, rem = divmod(frame_count / fps, 3600)
+            minutes, seconds = divmod(rem, 60)
+            frame_within_second = int(frame_count % fps)
+            timecode = f"{int(hours):02}{int(minutes):02}{int(seconds):02}{frame_within_second:02}"
 
-        timecode = f"{hours:02}{minutes:02}{seconds:02}{frame_within_second:02}"
+            # Save the frame with highlighted faces
+            frame_filename = f"{output_folder}/{base_filename}_{timecode}.jpg"
+            cv2.imwrite(frame_filename, frame)
 
-        # Save the frame with highlighted faces
-        frame_filename = f"{output_folder}/{base_filename}_{timecode}.jpg"
-        cv2.imwrite(frame_filename, frame)
-
-    # Move to the next detection point
-    frame_count += detection_interval
+        # Move to the next detection point
+        frame_count += detection_interval
 
     # Release the video capture object
     cap.release()
