@@ -31,7 +31,6 @@ def capture_index_cards(video_path, max_images=20):
         fgMask = cv2.morphologyEx(fgMask, cv2.MORPH_CLOSE, kernel)
 
         # Update motion history
-        # Update motion history
         timestamp = cap.get(cv2.CAP_PROP_POS_MSEC) / 1000  # Get the timestamp in seconds
         cv2.motempl.updateMotionHistory(fgMask, motion_history, timestamp, duration=0.5)
 
@@ -39,7 +38,7 @@ def capture_index_cards(video_path, max_images=20):
         delta1 = 0.4  # Minimum value for motion gradient magnitude
         delta2 = 1.0  # Maximum value for motion gradient magnitude
         # Directly use the motion history image without converting to uint8
-        mg_mask, mg_angle = cv2.motempl.calcMotionGradient(motion_history, delta1, delta2, apertureSize=5)
+        mg_mask, mg_angle = cv2.motempl.calcMotionGradient(motion_history, delta1, delta2, apertureSize=3)
 
         # Calculate the amount of motion
         motion_amount = cv2.norm(mg_mask, cv2.NORM_L1)
